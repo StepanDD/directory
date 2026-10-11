@@ -5,9 +5,9 @@
     <!-- Транзитивные зависимости тоже закрепляются -->
     <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
-
   <ItemGroup>
     <!-- HTTP / OpenAPI -->
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.17.14" />
     <!-- Анализаторы (версии здесь, подключение в Directory.Build.props) -->
     <PackageVersion Include="Roslynator.Analyzers" Version="4.15.0" />
