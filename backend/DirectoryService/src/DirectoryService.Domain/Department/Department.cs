@@ -4,8 +4,8 @@ namespace DirectoryService.Domain.Department;
 
 public class Department
 {
-    private List<DepartmentLocation>? _locations;
-    private List<DepartmentPosition>? _positions;
+    private List<DepartmentLocation> _locations = [];
+    private List<DepartmentPosition> _positions = [];
 
     public Guid Id { get; }
     public string Name { get; private set; }
@@ -16,8 +16,8 @@ public class Department
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
     // Отношения
-    public IReadOnlyList<DepartmentLocation>? Locations => _locations;
-    public IReadOnlyList<DepartmentPosition>? Positions => _positions;
+    public IReadOnlyList<DepartmentLocation> Locations => _locations;
+    public IReadOnlyList<DepartmentPosition> Positions => _positions;
     public Department(Guid id, string name, string slug,
         Department? parent, IEnumerable<Guid>? locationIds, IEnumerable<Guid>? positionIds)
     {
@@ -67,6 +67,7 @@ public class Department
         if (string.IsNullOrWhiteSpace(newSlug))
             throw new ArgumentException("Department slug cannot be null or empty.", nameof(newSlug));
         Slug = newSlug;
+        Path = Parent != null ? Parent.Path + "/" + newSlug : newSlug;
         UpdatedAt = DateTime.UtcNow;
     }
     public void ChangeParent(Department? newParent)
@@ -78,18 +79,12 @@ public class Department
     }
     public void AddLocation(Guid locationId, bool isPrimary)
     {
-        if (_locations == null)
-            _locations = new List<DepartmentLocation>();
-
         var newLocation = new DepartmentLocation(Guid.NewGuid(), this, locationId, isPrimary);
         _locations.Add(newLocation);
         UpdatedAt = DateTime.UtcNow;
     }
     public void AddLocation(IEnumerable<Guid> locationIds)
     {
-        if (_locations == null)
-            _locations = new List<DepartmentLocation>();
-
         foreach (var locationId in locationIds)
         {
             var newLocation = new DepartmentLocation(Guid.NewGuid(), this, locationId, false);
@@ -100,18 +95,12 @@ public class Department
     // todo: как-то сделать выбор праймовой локации
     public void AddPosition(Guid positionId)
     {
-        if (_positions == null)
-            _positions = new List<DepartmentPosition>();
-
         var newPosition = new DepartmentPosition(Guid.NewGuid(), this, positionId);
         _positions.Add(newPosition);
         UpdatedAt = DateTime.UtcNow;
     }
     public void AddPosition(IEnumerable<Guid> positionIds)
     {
-        if (_positions == null)
-            _positions = new List<DepartmentPosition>();
-
         foreach (var positionId in positionIds)
         {
             var newPosition = new DepartmentPosition(Guid.NewGuid(), this, positionId);
