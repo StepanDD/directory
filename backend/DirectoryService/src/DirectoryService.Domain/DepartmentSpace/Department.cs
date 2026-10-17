@@ -1,11 +1,12 @@
 using System;
 
-namespace DirectoryService.Domain.Department;
+namespace DirectoryService.Domain.DepartmentSpace;
 
 public class Department
 {
-    private List<DepartmentLocation> _locations = [];
-    private List<DepartmentPosition> _positions = [];
+    private const string PathSeparator = "/";
+    private readonly List<DepartmentLocation> _locations = [];
+    private readonly List<DepartmentPosition> _positions = [];
 
     public Guid Id { get; }
     public string Name { get; private set; }
@@ -32,7 +33,7 @@ public class Department
         {
             Parent = parent;
             ParentId = parent.Id;
-            Path = parent.Path + "/" + slug;
+            Path = parent.Path + PathSeparator + slug;
         }
         else
             Path = slug;       
@@ -67,14 +68,14 @@ public class Department
         if (string.IsNullOrWhiteSpace(newSlug))
             throw new ArgumentException("Department slug cannot be null or empty.", nameof(newSlug));
         Slug = newSlug;
-        Path = Parent != null ? Parent.Path + "/" + newSlug : newSlug;
+        Path = Parent != null ? Parent.Path + PathSeparator + newSlug : newSlug;
         UpdatedAt = DateTime.UtcNow;
     }
     public void ChangeParent(Department? newParent)
     {
         Parent = newParent;
         ParentId = newParent?.Id;
-        Path = newParent != null ? newParent.Path + "/" + Slug : Slug;
+        Path = newParent != null ? newParent.Path + PathSeparator + Slug : Slug;
         UpdatedAt = DateTime.UtcNow;
     }
     public void AddLocation(Guid locationId, bool isPrimary)
@@ -92,7 +93,7 @@ public class Department
         }
         UpdatedAt = DateTime.UtcNow;
     }
-    // todo: как-то сделать выбор праймовой локации
+    // туду: как-то сделать выбор праймовой локации
     public void AddPosition(Guid positionId)
     {
         var newPosition = new DepartmentPosition(Guid.NewGuid(), this, positionId);
