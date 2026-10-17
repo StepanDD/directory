@@ -1,6 +1,6 @@
 using System;
 
-namespace DirectoryService.Domain.Department;
+namespace DirectoryService.Domain.DepartmentSpace;
 
 public class DepartmentPosition
 {
