@@ -9,9 +9,9 @@ public class Department
     private readonly List<DepartmentPosition> _positions = [];
 
     public Guid Id { get; }
-    public string Name { get; private set; }
-    public string Slug { get; private set; }
-    public string Path { get; private set; }
+    public string Name { get; private set; } = string.Empty;
+    public string Slug { get; private set; } = string.Empty;
+    public string Path { get; private set; } = string.Empty;
     public Guid? ParentId { get; private set; }
     public Department? Parent { get; private set; }
     public DateTime CreatedAt { get; private set; }
@@ -19,6 +19,7 @@ public class Department
     // Отношения
     public IReadOnlyList<DepartmentLocation> Locations => _locations;
     public IReadOnlyList<DepartmentPosition> Positions => _positions;
+    private Department() { } // Для EF Core
     public Department(Guid id, string name, string slug,
         Department? parent, IEnumerable<Guid>? locationIds, IEnumerable<Guid>? positionIds)
     {
