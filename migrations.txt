@@ -1,0 +1,5 @@
+// Создание миграции
+dotnet ef migrations add Initial -s .\src\DirectoryService.Web\ -p .\src\DirectoryService.Infrastructure.Postgres\
+
+// Применение миграций
+dotnet ef database update -s .\src\DirectoryService.Web\ -p .\src\DirectoryService.Infrastructure.Postgres\

@@ -5,9 +5,10 @@ namespace DirectoryService.Domain;
 public class Position
 {
     public Guid Id { get; }
-    public string Name { get; private set; }
+    public string Name { get; private set; } = string.Empty;
     public DateTime CreatedAt { get; private set; }
     public DateTime UpdatedAt { get; private set; }
+    private Position() { } // Для EF Core
     public Position(Guid id, string name)
     {
         Id = id;
