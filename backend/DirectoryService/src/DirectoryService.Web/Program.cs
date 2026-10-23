@@ -1,23 +1,19 @@
 using DirectoryService.Infrastructure.Postgres;
 using DirectoryService.Presenters;
+using DirectoryService.Web;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// AppDbContext
+// AppDbContext - туду вынести в инфраструктуру
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
 
-
-builder.Services.AddOpenApi();
-
-builder.Services.AddControllers().AddApplicationPart(typeof(DepartmentsController).Assembly);
-
-builder.Services.AddHealthChecks();
+builder.Services.AddProgramDependencies();
 
 var app = builder.Build();
 

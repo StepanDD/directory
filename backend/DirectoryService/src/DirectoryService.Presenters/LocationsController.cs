@@ -1,4 +1,5 @@
 using DirectoryService.Contracts.LocationsDtos;
+using DirectoryService.Core.Locations;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,17 @@ namespace DirectoryService.Presenters
     [ApiController]
     public class LocationsController : ControllerBase
     {
+        private readonly ILocationsService _locationsService;
+
+        public LocationsController(ILocationsService locationsService)
+        {
+            _locationsService = locationsService;
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateLocationDto request)
         {
-            return Ok(new { Message = "Location created successfully" });
+            var locationId = await _locationsService.Create(request, CancellationToken.None);
+            return Ok(new { Message = "Location created successfully", LocationId = locationId });
         }
         [HttpGet("{LocationId:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid LocationId)

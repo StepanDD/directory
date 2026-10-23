@@ -7,8 +7,10 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- HTTP / OpenAPI -->
+    <PackageVersion Include="FluentValidation.DependencyInjectionExtensions" Version="12.2.0" />
     <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.0.12" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
     <PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
     <PackageVersion Include="Scalar.AspNetCore" Version="2.17.14" />
     <!-- Анализаторы (версии здесь, подключение в Directory.Build.props) -->
