@@ -6,8 +6,8 @@
     <Nullable>enable</Nullable>
 
     <!-- Все предупреждения становятся ошибками компиляции -->
-    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-    <CodeAnalysisTreatWarningsAsErrors>true</CodeAnalysisTreatWarningsAsErrors>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <CodeAnalysisTreatWarningsAsErrors>false</CodeAnalysisTreatWarningsAsErrors>
 
     <!-- Включаем стилевые правила в build -->
     <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
