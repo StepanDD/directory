@@ -1,4 +1,5 @@
 using DirectoryService.Infrastructure.Postgres;
+using DirectoryService.Presenters;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -14,7 +15,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddOpenApi();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddApplicationPart(typeof(DepartmentsController).Assembly);
 
 builder.Services.AddHealthChecks();
 
