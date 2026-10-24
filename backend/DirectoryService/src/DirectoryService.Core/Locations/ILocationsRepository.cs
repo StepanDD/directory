@@ -5,6 +5,6 @@ namespace DirectoryService.Core.Locations;
 
 public interface ILocationsRepository
 {
-    Task<Guid> CreateAsync(Location location, CancellationToken cancellationToken);
+    Task<Guid> AddAsync(Location location, CancellationToken cancellationToken);
     Task<bool> CheckNameAsync(string name, CancellationToken cancellationToken);
 }

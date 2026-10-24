@@ -4,19 +4,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace DirectoryService.Infrastructure.Postgres.Locations;
 
-public sealed class LocationsRepository(AppDbContext dbContext) : ILocationsRepository
+public sealed class LocationsRepository : ILocationsRepository
 {
-    public async Task<Guid> CreateAsync(Location location, CancellationToken cancellationToken)
+    private readonly AppDbContext _dbContext;
+
+    public LocationsRepository(AppDbContext dbContext)
     {
-        //await dbContext.Set<Location>().AddAsync(location, cancellationToken);
-        //await dbContext.SaveChangesAsync(cancellationToken);
-        return Guid.Empty;
+        _dbContext = dbContext;
+    }
+    public async Task<Guid> AddAsync(Location location, CancellationToken cancellationToken)
+    {
+        await _dbContext.Set<Location>().AddAsync(location, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return location.Id;
     }
 
-    public Task<bool> CheckNameAsync(string name, CancellationToken cancellationToken)
+    public async Task<bool> CheckNameAsync(string name, CancellationToken cancellationToken)
     {
-        //return dbContext.Set<Location>()
-        //    .AnyAsync(location => location.Name == name, cancellationToken);
-        return Task.FromResult(false);
+        return await _dbContext.Set<Location>().AnyAsync(location => location.Name == name, cancellationToken);
     }
 }

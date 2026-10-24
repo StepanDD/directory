@@ -45,7 +45,7 @@ public class LocationsService : ILocationsService
                 locationDto.Address.HouseNumber,
                 locationDto.Address.ApartmentNumber));
 
-        var locationId = await _locationsRepository.CreateAsync(location, cancellationToken);
+        var locationId = await _locationsRepository.AddAsync(location, cancellationToken);
 
         _logger.LogInformation("Location with id {LocationId} created successfully", locationId);
 
