@@ -45,4 +45,9 @@ public class LocationsRepositoryDapper : ILocationsRepository
         await connection.ExecuteAsync(locationInsertSql, locationInsertParams);
         return location.Id;
     }
+
+    public Task<bool> CheckLocationsExistenceByIdsAsync(IEnumerable<Guid>? locationIds, CancellationToken cancellationToken)
+    {
+        throw new NotImplementedException();
+    }
 }

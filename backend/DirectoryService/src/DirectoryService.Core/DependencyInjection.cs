@@ -1,4 +1,5 @@
 using System;
+using DirectoryService.Core.Departments;
 using DirectoryService.Core.Locations;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,7 @@ public static class DependencyInjection
     {
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.AddScoped<ILocationsService, LocationsService>();
+        services.AddScoped<IDepartmentsService, DepartmentsService>();
         return services;
     }
 }

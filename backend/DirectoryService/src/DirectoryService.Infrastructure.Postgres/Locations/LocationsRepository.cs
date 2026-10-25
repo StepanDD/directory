@@ -19,6 +19,23 @@ public sealed class LocationsRepository : ILocationsRepository
         return location.Id;
     }
 
+    public async Task<bool> CheckLocationsExistenceByIdsAsync(IEnumerable<Guid>? locationIds, CancellationToken cancellationToken)
+    {
+        if (locationIds?.Any() != true)
+        {
+            return true;
+        }
+        foreach (var locationId in locationIds)
+        {
+            var exists = await _dbContext.Set<Location>().AnyAsync(location => location.Id == locationId, cancellationToken);
+            if (!exists)
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public async Task<bool> CheckNameAsync(string name, CancellationToken cancellationToken)
     {
         return await _dbContext.Set<Location>().AnyAsync(location => location.Name == name, cancellationToken);
