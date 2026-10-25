@@ -1,4 +1,5 @@
 using DirectoryService.Contracts.DepartmentsDtos;
+using DirectoryService.Core.Departments;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,10 +9,18 @@ namespace DirectoryService.Presenters
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
+        private readonly IDepartmentsService _departmentsService;
+
+        public DepartmentsController(IDepartmentsService departmentsService)
+        {
+            _departmentsService = departmentsService;
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateDepartmentDto request)
         {
-            return Ok(new { Message = "Department created successfully" });
+            var departmentId = await _departmentsService.Create(request, CancellationToken.None);
+            return Ok(new { Message = "Department created successfully", DepartmentId = departmentId });
         }
         [HttpGet("{DepartmentId:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid DepartmentId)

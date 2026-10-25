@@ -36,7 +36,7 @@ public class LocationsService : ILocationsService
         }
 
         Location location = new(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             locationDto.Name,
             new Address(
                 locationDto.Address.Country,

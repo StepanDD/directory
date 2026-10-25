@@ -1,0 +1,8 @@
+using DirectoryService.Contracts.DepartmentsDtos;
+
+namespace DirectoryService.Core.Departments;
+
+public interface IDepartmentsService
+{
+    Task<Guid> Create(CreateDepartmentDto departmentDto, CancellationToken cancellationToken);
+}
