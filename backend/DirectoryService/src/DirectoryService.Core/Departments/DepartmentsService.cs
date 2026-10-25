@@ -45,7 +45,7 @@ public class DepartmentsService : IDepartmentsService
             parentDepartment = await _departmentsRepository.GetByIdAsync(departmentDto.ParentId.Value, cancellationToken);
         }
         var department = new Department(
-            Guid.NewGuid(),
+            Guid.CreateVersion7(),
             departmentDto.Name,
             departmentDto.Slug,
             parentDepartment,

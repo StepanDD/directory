@@ -43,16 +43,18 @@ public class Department
 
         if (locationIds != null)
         {
-            var locations = locationIds
-                .Select(locationId => new DepartmentLocation(Guid.NewGuid(), this, locationId, false))
+            var locationIdsDistinct = locationIds.Distinct().ToList();
+            var locations = locationIdsDistinct
+                .Select(locationId => new DepartmentLocation(Guid.CreateVersion7(), this, locationId, false))
                 .ToList();
             _locations = locations;
         }
 
         if (positionIds != null)
         {
-            var positions = positionIds
-                .Select(positionId => new DepartmentPosition(Guid.NewGuid(), this, positionId))
+            var positionIdsDistinct = positionIds.Distinct().ToList();
+            var positions = positionIdsDistinct
+                .Select(positionId => new DepartmentPosition(Guid.CreateVersion7(), this, positionId))
                 .ToList();
             _positions = positions;
         }
@@ -81,7 +83,7 @@ public class Department
     }
     public void AddLocation(Guid locationId, bool isPrimary)
     {
-        var newLocation = new DepartmentLocation(Guid.NewGuid(), this, locationId, isPrimary);
+        var newLocation = new DepartmentLocation(Guid.CreateVersion7(), this, locationId, isPrimary);
         _locations.Add(newLocation);
         UpdatedAt = DateTime.UtcNow;
     }
@@ -89,7 +91,7 @@ public class Department
     {
         foreach (var locationId in locationIds)
         {
-            var newLocation = new DepartmentLocation(Guid.NewGuid(), this, locationId, false);
+            var newLocation = new DepartmentLocation(Guid.CreateVersion7(), this, locationId, false);
             _locations.Add(newLocation);
         }
         UpdatedAt = DateTime.UtcNow;
@@ -97,7 +99,7 @@ public class Department
     // туду: как-то сделать выбор праймовой локации
     public void AddPosition(Guid positionId)
     {
-        var newPosition = new DepartmentPosition(Guid.NewGuid(), this, positionId);
+        var newPosition = new DepartmentPosition(Guid.CreateVersion7(), this, positionId);
         _positions.Add(newPosition);
         UpdatedAt = DateTime.UtcNow;
     }
@@ -105,7 +107,7 @@ public class Department
     {
         foreach (var positionId in positionIds)
         {
-            var newPosition = new DepartmentPosition(Guid.NewGuid(), this, positionId);
+            var newPosition = new DepartmentPosition(Guid.CreateVersion7(), this, positionId);
             _positions.Add(newPosition);
         }
         UpdatedAt = DateTime.UtcNow;

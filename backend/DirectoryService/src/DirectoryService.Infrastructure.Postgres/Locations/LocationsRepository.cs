@@ -25,15 +25,12 @@ public sealed class LocationsRepository : ILocationsRepository
         {
             return true;
         }
-        foreach (var locationId in locationIds)
-        {
-            var exists = await _dbContext.Set<Location>().AnyAsync(location => location.Id == locationId, cancellationToken);
-            if (!exists)
-            {
-                return false;
-            }
-        }
-        return true;
+
+        var ids = locationIds.Distinct().ToList();
+        var existingCount = await _dbContext.Set<Location>()
+            .CountAsync(location => ids.Contains(location.Id), cancellationToken);
+
+        return existingCount == ids.Count;
     }
 
     public async Task<bool> CheckNameAsync(string name, CancellationToken cancellationToken)
