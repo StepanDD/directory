@@ -20,6 +20,12 @@ public class DepartmentsRepository : IDepartmentsRepository
         return department.Id;
     }
 
+    public async Task<bool> CheckLocationBinding(Guid departmentId, Guid locationId)
+    {
+        return await _dbContext.Set<DepartmentLocation>()
+            .AnyAsync(dl => dl.DepartmentId == departmentId && dl.LocationId == locationId);
+    }
+
     public async Task<bool> CheckParentIdAsync(Guid? parentId, CancellationToken cancellationToken)
     {
         if (parentId == null)
@@ -37,6 +43,7 @@ public class DepartmentsRepository : IDepartmentsRepository
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
+        var a = _dbContext.ChangeTracker.Entries();
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

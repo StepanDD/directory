@@ -28,6 +28,15 @@ namespace DirectoryService.Presenters
             var updatedDepartmentId = await _departmentsService.Update(departmentId, request, CancellationToken.None);
             return Ok(new { Message = $"Department with id {updatedDepartmentId} patched successfully" });
         }
+        [HttpPost("{DepartmentId:guid}/locations/{LocationId:guid}")]
+        public async Task<IActionResult> BindLocation(
+            [FromRoute] Guid departmentId,
+            [FromRoute] Guid locationId,
+            [FromBody] bool isPrimary = false)
+        {
+            await _departmentsService.BindLocation(departmentId, locationId, isPrimary, CancellationToken.None);
+            return Ok();
+        }
         [HttpGet("{DepartmentId:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid departmentId)
         {

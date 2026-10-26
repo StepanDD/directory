@@ -1,6 +1,7 @@
 using System;
 using DirectoryService.Contracts.DepartmentsDtos;
 using DirectoryService.Core.Locations;
+using DirectoryService.Domain;
 using DirectoryService.Domain.DepartmentSpace;
 using FluentValidation;
 
@@ -23,6 +24,22 @@ public class DepartmentsService : IDepartmentsService
         _updateDepartmentValidator = updateDepartmentValidator;
         _departmentsRepository = departmentsRepository;
         _locationsRepository = locationsRepository;
+    }
+
+    public async Task BindLocation(Guid departmentId, Guid locationId, bool isPrimary, CancellationToken cancellationToken)
+    {
+        Department? department = await _departmentsRepository.GetByIdAsync(departmentId, cancellationToken)
+            ?? throw new InvalidOperationException("Отдел не существует");
+        if (!await _locationsRepository.CheckLocationsExistenceByIdsAsync([locationId], cancellationToken))
+        {
+            throw new InvalidOperationException("Локация не существует");
+        }
+        if (await _departmentsRepository.CheckLocationBinding(departmentId, locationId))
+        {
+            throw new InvalidOperationException("Эта локация уже привязана");
+        }
+        department.AddLocation(locationId, isPrimary);
+        await _departmentsRepository.SaveChangesAsync(cancellationToken);
     }
 
     public async Task<Guid> Create(CreateDepartmentDto departmentDto, CancellationToken cancellationToken)

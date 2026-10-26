@@ -12,7 +12,7 @@ public class DepartmentConfiguration : IEntityTypeConfiguration<Department>
         builder.ToTable("departments");
 
         builder.HasKey(d => d.Id);
-        builder.Property(d => d.Id).HasColumnName("id");
+        builder.Property(d => d.Id).HasColumnName("id").ValueGeneratedNever();
 
         builder.Property(d => d.Name).IsRequired().HasColumnName("name");
         builder.Property(d => d.Slug).IsRequired().HasColumnName("slug");

@@ -81,7 +81,7 @@ public class Department
         Path = newParent != null ? newParent.Path + PathSeparator + Slug : Slug;
         UpdatedAt = DateTime.UtcNow;
     }
-    public void AddLocation(Guid locationId, bool isPrimary)
+    public void AddLocation(Guid locationId, bool isPrimary = false)
     {
         var newLocation = new DepartmentLocation(Guid.CreateVersion7(), this, locationId, isPrimary);
         _locations.Add(newLocation);
