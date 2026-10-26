@@ -8,4 +8,5 @@ public interface IDepartmentsRepository
     Task<Guid> AddAsync(Department department, CancellationToken cancellationToken);
     Task<bool> CheckParentIdAsync(Guid? parentId, CancellationToken cancellationToken);
     Task<Department?> GetByIdAsync(Guid departmentId, CancellationToken cancellationToken);
+    Task SaveChangesAsync(CancellationToken cancellationToken);
 }

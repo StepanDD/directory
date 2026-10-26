@@ -6,7 +6,7 @@ using DirectoryService.Infrastructure.Postgres.DataBase;
 
 namespace DirectoryService.Infrastructure.Postgres.Locations;
 
-public class LocationsRepositoryDapper : ILocationsRepository
+public class LocationsRepositoryDapper
 {
     private readonly IConnectionFactory _connectionFactory;
 

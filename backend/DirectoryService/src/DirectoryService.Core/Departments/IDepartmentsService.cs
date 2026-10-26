@@ -5,4 +5,5 @@ namespace DirectoryService.Core.Departments;
 public interface IDepartmentsService
 {
     Task<Guid> Create(CreateDepartmentDto departmentDto, CancellationToken cancellationToken);
+    Task<Guid> Update(Guid departmentId, UpdateDepartmentDto departmentDto, CancellationToken cancellationToken);
 }

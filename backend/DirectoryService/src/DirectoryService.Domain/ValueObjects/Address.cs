@@ -24,4 +24,18 @@ public record Address
     public string Street { get; }
     public string HouseNumber { get; }
     public string? ApartmentNumber { get; }
+    public Address Update(
+        string? country = null,
+        string? city = null,
+        string? street = null,
+        string? houseNumber = null,
+        string? apartmentNumber = null)
+    {
+        return new Address(
+            country ?? Country,
+            city ?? City,
+            street ?? Street,
+            houseNumber ?? HouseNumber,
+            apartmentNumber ?? ApartmentNumber);
+    }
 }
