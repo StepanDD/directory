@@ -37,4 +37,14 @@ public sealed class LocationsRepository : ILocationsRepository
     {
         return await _dbContext.Set<Location>().AnyAsync(location => location.Name == name, cancellationToken);
     }
+
+    public async Task<Location?> GetByIdAsync(Guid locationId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Set<Location>().FirstOrDefaultAsync(l => l.Id == locationId, cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
+    }
 }

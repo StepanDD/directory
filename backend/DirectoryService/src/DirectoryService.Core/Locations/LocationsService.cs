@@ -11,21 +11,24 @@ public class LocationsService : ILocationsService
 {
     private readonly ILocationsRepository _locationsRepository;
     private readonly ILogger<LocationsService> _logger;
-    private readonly IValidator<CreateLocationDto> _validator;
+    private readonly IValidator<CreateLocationDto> _createLocationValidator;
+    private readonly IValidator<UpdateLocationDto> _updateLocationValidator;
 
     public LocationsService(
         ILocationsRepository locationsRepository,
-        IValidator<CreateLocationDto> validator,
+        IValidator<CreateLocationDto> createLocationValidator,
+        IValidator<UpdateLocationDto> updateLocationValidator,
         ILogger<LocationsService> logger)
     {
         _locationsRepository = locationsRepository;
-        _validator = validator;
+        _createLocationValidator = createLocationValidator;
+        _updateLocationValidator = updateLocationValidator;
         _logger = logger;
     }
 
     public async Task<Guid> Create(CreateLocationDto locationDto, CancellationToken cancellationToken)
     {
-        var validationResult = await _validator.ValidateAsync(locationDto, cancellationToken);
+        var validationResult = await _createLocationValidator.ValidateAsync(locationDto, cancellationToken);
         if (!validationResult.IsValid)
         {
             throw new ValidationException(validationResult.Errors);
@@ -50,5 +53,40 @@ public class LocationsService : ILocationsService
         _logger.LogInformation("Location with id {LocationId} created successfully", locationId);
 
         return locationId;
+    }
+
+    public async Task<Guid> Update(Guid locationId, UpdateLocationDto locationDto, CancellationToken cancellationToken)
+    {
+        var validationResult = await _updateLocationValidator.ValidateAsync(locationDto, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            throw new ValidationException(validationResult.Errors);
+        }
+        Location? location = await _locationsRepository.GetByIdAsync(locationId, cancellationToken)
+            ?? throw new InvalidOperationException($"Location with id {locationId} does not exist.");
+
+        if (locationDto.Name is not null
+                && !string.Equals(locationDto.Name, location.Name, StringComparison.Ordinal)
+                && await _locationsRepository.CheckNameAsync(locationDto.Name, cancellationToken))
+        {
+            throw new InvalidOperationException($"Location with name '{locationDto.Name}' already exists.");
+        }
+
+        if (!string.IsNullOrWhiteSpace(locationDto.Name))
+        {
+            location.ChangeName(locationDto.Name);
+        }
+        if (locationDto.Address is not null)
+        {
+            var newAddress = location.Address.Update(
+                locationDto.Address.Country,
+                locationDto.Address.City,
+                locationDto.Address.Street,
+                locationDto.Address.HouseNumber,
+                locationDto.Address.ApartmentNumber);
+            location.ChangeAddress(newAddress);
+        }
+        await _locationsRepository.SaveChangesAsync(cancellationToken);
+        return location.Id;
     }
 }

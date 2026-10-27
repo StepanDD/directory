@@ -22,10 +22,33 @@ namespace DirectoryService.Presenters
             var departmentId = await _departmentsService.Create(request, CancellationToken.None);
             return Ok(new { Message = "Department created successfully", DepartmentId = departmentId });
         }
-        [HttpGet("{DepartmentId:guid}")]
-        public async Task<IActionResult> GetById([FromRoute] Guid DepartmentId)
+        [HttpPatch("{DepartmentId:guid}")]
+        public async Task<IActionResult> Patch([FromRoute] Guid departmentId, [FromBody] UpdateDepartmentDto request)
         {
-            return NotFound(new { Message = $"Department with id {DepartmentId} not found" });
+            var updatedDepartmentId = await _departmentsService.Update(departmentId, request, CancellationToken.None);
+            return Ok(new { Message = $"Department with id {updatedDepartmentId} patched successfully" });
+        }
+        [HttpPost("{DepartmentId:guid}/locations/{LocationId:guid}")]
+        public async Task<IActionResult> BindLocation(
+            [FromRoute] Guid departmentId,
+            [FromRoute] Guid locationId,
+            [FromBody] bool isPrimary = false)
+        {
+            await _departmentsService.BindLocation(departmentId, locationId, isPrimary, CancellationToken.None);
+            return Ok();
+        }
+        [HttpDelete("{DepartmentId:guid}/locations/{LocationId:guid}")]
+        public async Task<IActionResult> UnBindLocation(
+            [FromRoute] Guid departmentId,
+            [FromRoute] Guid locationId)
+        {
+            await _departmentsService.UnBindLocation(departmentId, locationId, CancellationToken.None);
+            return Ok();
+        }
+        [HttpGet("{DepartmentId:guid}")]
+        public async Task<IActionResult> GetById([FromRoute] Guid departmentId)
+        {
+            return NotFound(new { Message = $"Department with id {departmentId} not found" });
         }
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetDepartmentsDto request)
@@ -33,14 +56,14 @@ namespace DirectoryService.Presenters
             return Ok(new List<object>());
         }
         [HttpPut("{DepartmentId:guid}")]
-        public async Task<IActionResult> Update([FromRoute] Guid DepartmentId, [FromBody] UpdateDepartmentDto request)
+        public async Task<IActionResult> Update([FromRoute] Guid departmentId, [FromBody] UpdateDepartmentDto request)
         {
-            return Ok(new { Message = $"Department with id {DepartmentId} updated successfully" });
+            return Ok(new { Message = $"Department with id {departmentId} updated successfully" });
         }
         [HttpDelete("{DepartmentId:guid}")]
-        public async Task<IActionResult> Delete([FromRoute] Guid DepartmentId)
+        public async Task<IActionResult> Delete([FromRoute] Guid departmentId)
         {
-            return Ok(new { Message = $"Department with id {DepartmentId} deleted successfully" });
+            return Ok(new { Message = $"Department with id {departmentId} deleted successfully" });
         }
     }
 }

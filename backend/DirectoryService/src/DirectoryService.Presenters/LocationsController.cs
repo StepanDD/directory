@@ -21,6 +21,12 @@ namespace DirectoryService.Presenters
             var locationId = await _locationsService.Create(request, CancellationToken.None);
             return Ok(new { Message = "Location created successfully", LocationId = locationId });
         }
+        [HttpPatch("{LocationId:guid}")]
+        public async Task<IActionResult> Patch([FromRoute] Guid LocationId, [FromBody] UpdateLocationDto request)
+        {
+            var updatedLocationId = await _locationsService.Update(LocationId, request, CancellationToken.None);
+            return Ok(new { Message = $"Location with id {updatedLocationId} patched successfully" });
+        }
         [HttpGet("{LocationId:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid LocationId)
         {

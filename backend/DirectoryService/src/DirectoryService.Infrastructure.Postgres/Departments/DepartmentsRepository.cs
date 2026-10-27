@@ -19,7 +19,6 @@ public class DepartmentsRepository : IDepartmentsRepository
         await _dbContext.SaveChangesAsync(cancellationToken);
         return department.Id;
     }
-
     public async Task<bool> CheckParentIdAsync(Guid? parentId, CancellationToken cancellationToken)
     {
         if (parentId == null)
@@ -33,5 +32,16 @@ public class DepartmentsRepository : IDepartmentsRepository
     public async Task<Department?> GetByIdAsync(Guid departmentId, CancellationToken cancellationToken)
     {
         return await _dbContext.Set<Department>().FirstOrDefaultAsync(d => d.Id == departmentId, cancellationToken);
+    }
+    public async Task<Department?> GetByIdIncludeLocationsAsync(Guid departmentId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Set<Department>()
+            .Include(d => d.Locations)
+            .FirstOrDefaultAsync(d => d.Id == departmentId, cancellationToken);
+    }
+
+    public async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

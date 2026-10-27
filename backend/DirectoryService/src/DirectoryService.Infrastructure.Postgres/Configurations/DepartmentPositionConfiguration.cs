@@ -12,7 +12,7 @@ public class DepartmentPositionConfiguration : IEntityTypeConfiguration<Departme
         builder.ToTable("department_position");
 
         builder.HasKey(dp => dp.Id);
-        builder.Property(dp => dp.Id).HasColumnName("id");
+        builder.Property(dp => dp.Id).HasColumnName("id").ValueGeneratedNever();
 
         builder.HasOne(dp => dp.Department)
             .WithMany(d => d.Positions)
