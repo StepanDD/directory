@@ -14,6 +14,9 @@ public class DepartmentLocationConfiguration : IEntityTypeConfiguration<Departme
         builder.HasKey(dl => dl.Id);
         builder.Property(dl => dl.Id).HasColumnName("id").ValueGeneratedNever();
 
+        builder.HasIndex(dl => new { dl.DepartmentId, dl.LocationId })
+            .IsUnique();
+
         builder.Property(dl => dl.IsPrimary).IsRequired().HasColumnName("is_primary");
 
         builder.HasOne(dl => dl.Department)

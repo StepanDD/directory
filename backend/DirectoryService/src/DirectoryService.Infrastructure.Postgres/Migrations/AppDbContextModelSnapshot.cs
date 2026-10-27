@@ -25,7 +25,6 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("DirectoryService.Domain.DepartmentSpace.Department", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -66,9 +65,12 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("DirectoryService.Domain.DepartmentSpace.DepartmentLocation", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
+
+                    b.Property<Guid>("DepartmentId")
+                        .HasColumnType("uuid")
+                        .HasColumnName("department_id");
 
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("boolean")
@@ -78,14 +80,12 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
                         .HasColumnType("uuid")
                         .HasColumnName("location_id");
 
-                    b.Property<Guid>("department_id")
-                        .HasColumnType("uuid");
-
                     b.HasKey("Id");
 
                     b.HasIndex("LocationId");
 
-                    b.HasIndex("department_id");
+                    b.HasIndex("DepartmentId", "LocationId")
+                        .IsUnique();
 
                     b.ToTable("department_location", (string)null);
                 });
@@ -93,7 +93,6 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("DirectoryService.Domain.DepartmentSpace.DepartmentPosition", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -116,7 +115,6 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("DirectoryService.Domain.Location", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -141,7 +139,6 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
             modelBuilder.Entity("DirectoryService.Domain.Position", b =>
                 {
                     b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasColumnType("uuid")
                         .HasColumnName("id");
 
@@ -175,15 +172,15 @@ namespace DirectoryService.Infrastructure.Postgres.Migrations
 
             modelBuilder.Entity("DirectoryService.Domain.DepartmentSpace.DepartmentLocation", b =>
                 {
-                    b.HasOne("DirectoryService.Domain.Location", null)
-                        .WithMany()
-                        .HasForeignKey("LocationId")
+                    b.HasOne("DirectoryService.Domain.DepartmentSpace.Department", "Department")
+                        .WithMany("Locations")
+                        .HasForeignKey("DepartmentId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("DirectoryService.Domain.DepartmentSpace.Department", "Department")
-                        .WithMany("Locations")
-                        .HasForeignKey("department_id")
+                    b.HasOne("DirectoryService.Domain.Location", null)
+                        .WithMany()
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 

@@ -34,10 +34,6 @@ public class DepartmentsService : IDepartmentsService
         {
             throw new InvalidOperationException("Локация не существует");
         }
-        // if (await _departmentsRepository.CheckLocationBinding(departmentId, locationId))
-        // {
-        //     throw new InvalidOperationException("Эта локация уже привязана");
-        // }
         department.AddLocation(locationId, isPrimary);
         await _departmentsRepository.SaveChangesAsync(cancellationToken);
     }
@@ -49,10 +45,6 @@ public class DepartmentsService : IDepartmentsService
         {
             throw new InvalidOperationException("Локация не существует");
         }
-        // if (!await _departmentsRepository.CheckLocationBinding(departmentId, locationId))
-        // {
-        //     throw new InvalidOperationException("Эта локация не привязана");
-        // }
         department.DeleteLocation(locationId);
         await _departmentsRepository.SaveChangesAsync(cancellationToken);
     }
