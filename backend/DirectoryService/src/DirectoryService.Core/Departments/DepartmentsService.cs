@@ -28,17 +28,32 @@ public class DepartmentsService : IDepartmentsService
 
     public async Task BindLocation(Guid departmentId, Guid locationId, bool isPrimary, CancellationToken cancellationToken)
     {
-        Department? department = await _departmentsRepository.GetByIdAsync(departmentId, cancellationToken)
+        Department? department = await _departmentsRepository.GetByIdIncludeLocationsAsync(departmentId, cancellationToken)
             ?? throw new InvalidOperationException("Отдел не существует");
         if (!await _locationsRepository.CheckLocationsExistenceByIdsAsync([locationId], cancellationToken))
         {
             throw new InvalidOperationException("Локация не существует");
         }
-        if (await _departmentsRepository.CheckLocationBinding(departmentId, locationId))
-        {
-            throw new InvalidOperationException("Эта локация уже привязана");
-        }
+        // if (await _departmentsRepository.CheckLocationBinding(departmentId, locationId))
+        // {
+        //     throw new InvalidOperationException("Эта локация уже привязана");
+        // }
         department.AddLocation(locationId, isPrimary);
+        await _departmentsRepository.SaveChangesAsync(cancellationToken);
+    }
+    public async Task UnBindLocation(Guid departmentId, Guid locationId, CancellationToken cancellationToken)
+    {
+        Department? department = await _departmentsRepository.GetByIdIncludeLocationsAsync(departmentId, cancellationToken)
+            ?? throw new InvalidOperationException("Отдел не существует");
+        if (!await _locationsRepository.CheckLocationsExistenceByIdsAsync([locationId], cancellationToken))
+        {
+            throw new InvalidOperationException("Локация не существует");
+        }
+        // if (!await _departmentsRepository.CheckLocationBinding(departmentId, locationId))
+        // {
+        //     throw new InvalidOperationException("Эта локация не привязана");
+        // }
+        department.DeleteLocation(locationId);
         await _departmentsRepository.SaveChangesAsync(cancellationToken);
     }
 

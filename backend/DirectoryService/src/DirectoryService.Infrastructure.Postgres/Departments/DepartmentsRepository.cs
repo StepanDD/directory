@@ -40,10 +40,15 @@ public class DepartmentsRepository : IDepartmentsRepository
     {
         return await _dbContext.Set<Department>().FirstOrDefaultAsync(d => d.Id == departmentId, cancellationToken);
     }
+    public async Task<Department?> GetByIdIncludeLocationsAsync(Guid departmentId, CancellationToken cancellationToken)
+    {
+        return await _dbContext.Set<Department>()
+            .Include(d => d.Locations)
+            .FirstOrDefaultAsync(d => d.Id == departmentId, cancellationToken);
+    }
 
     public async Task SaveChangesAsync(CancellationToken cancellationToken)
     {
-        var a = _dbContext.ChangeTracker.Entries();
         await _dbContext.SaveChangesAsync(cancellationToken);
     }
 }

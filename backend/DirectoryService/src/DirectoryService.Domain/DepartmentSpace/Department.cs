@@ -84,16 +84,28 @@ public class Department
     public void AddLocation(Guid locationId, bool isPrimary = false)
     {
         var newLocation = new DepartmentLocation(Guid.CreateVersion7(), this, locationId, isPrimary);
+        if (_locations.Exists(l => l.LocationId == locationId))
+        {
+            throw new InvalidOperationException("Домен: эта локация уже привязана");
+        }
         _locations.Add(newLocation);
         UpdatedAt = DateTime.UtcNow;
     }
     public void AddLocation(IEnumerable<Guid> locationIds)
     {
+        throw new NotSupportedException();
         foreach (var locationId in locationIds)
         {
             var newLocation = new DepartmentLocation(Guid.CreateVersion7(), this, locationId, false);
             _locations.Add(newLocation);
         }
+        UpdatedAt = DateTime.UtcNow;
+    }
+    public void DeleteLocation(Guid locationId)
+    {
+        var locationForDelete = _locations.FirstOrDefault(l => l.LocationId == locationId)
+            ?? throw new InvalidOperationException("Домен: Такой локации не привязано");
+        _locations.Remove(locationForDelete);
         UpdatedAt = DateTime.UtcNow;
     }
     // туду: как-то сделать выбор праймовой локации

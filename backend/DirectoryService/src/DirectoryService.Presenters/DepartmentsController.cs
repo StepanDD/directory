@@ -37,6 +37,14 @@ namespace DirectoryService.Presenters
             await _departmentsService.BindLocation(departmentId, locationId, isPrimary, CancellationToken.None);
             return Ok();
         }
+        [HttpDelete("{DepartmentId:guid}/locations/{LocationId:guid}")]
+        public async Task<IActionResult> UnBindLocation(
+            [FromRoute] Guid departmentId,
+            [FromRoute] Guid locationId)
+        {
+            await _departmentsService.UnBindLocation(departmentId, locationId, CancellationToken.None);
+            return Ok();
+        }
         [HttpGet("{DepartmentId:guid}")]
         public async Task<IActionResult> GetById([FromRoute] Guid departmentId)
         {
