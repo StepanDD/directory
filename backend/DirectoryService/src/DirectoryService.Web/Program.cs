@@ -1,6 +1,7 @@
 using DirectoryService.Infrastructure.Postgres;
 using DirectoryService.Presenters;
 using DirectoryService.Web;
+using DirectoryService.Web.Middlewares;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -16,6 +17,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddProgramDependencies();
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionMiddleware>();
 
 app.MapGet("/", () => "Hello World!");
 

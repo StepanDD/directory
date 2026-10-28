@@ -1,6 +1,9 @@
 using System;
 using DirectoryService.Contracts.LocationsDtos;
-using DirectoryService.Domain;
+using DirectoryService.Domain.Common;
+using DirectoryService.Domain.Common.Exceptions;
+using DirectoryService.Domain.Locations;
+using DirectoryService.Domain.Locations.Exceptions;
 using DirectoryService.Domain.ValueObjects;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
@@ -31,11 +34,11 @@ public class LocationsService : ILocationsService
         var validationResult = await _createLocationValidator.ValidateAsync(locationDto, cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            throw new DomainValidationException(validationResult.ToErrors());
         }
         if (await _locationsRepository.CheckNameAsync(locationDto.Name, cancellationToken))
         {
-            throw new InvalidOperationException($"Location with name '{locationDto.Name}' already exists.");
+            throw new LocationNameDuplicateException(locationDto.Name);
         }
 
         Location location = new(
@@ -60,16 +63,16 @@ public class LocationsService : ILocationsService
         var validationResult = await _updateLocationValidator.ValidateAsync(locationDto, cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            throw new DomainValidationException(validationResult.ToErrors());
         }
         Location? location = await _locationsRepository.GetByIdAsync(locationId, cancellationToken)
-            ?? throw new InvalidOperationException($"Location with id {locationId} does not exist.");
+            ?? throw new LocationNotFoundException(locationId);
 
         if (locationDto.Name is not null
                 && !string.Equals(locationDto.Name, location.Name, StringComparison.Ordinal)
                 && await _locationsRepository.CheckNameAsync(locationDto.Name, cancellationToken))
         {
-            throw new InvalidOperationException($"Location with name '{locationDto.Name}' already exists.");
+            throw new LocationNameDuplicateException(locationDto.Name);
         }
 
         if (!string.IsNullOrWhiteSpace(locationDto.Name))

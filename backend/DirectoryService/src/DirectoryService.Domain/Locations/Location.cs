@@ -1,7 +1,7 @@
 using System;
 using DirectoryService.Domain.ValueObjects;
 
-namespace DirectoryService.Domain;
+namespace DirectoryService.Domain.Locations;
 
 public class Location
 {

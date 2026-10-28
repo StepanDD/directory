@@ -1,7 +1,7 @@
 using System;
 using Dapper;
 using DirectoryService.Core.Locations;
-using DirectoryService.Domain;
+using DirectoryService.Domain.Locations;
 using DirectoryService.Infrastructure.Postgres.DataBase;
 
 namespace DirectoryService.Infrastructure.Postgres.Locations;

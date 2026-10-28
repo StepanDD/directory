@@ -1,5 +1,5 @@
 using System;
-using DirectoryService.Domain;
+using DirectoryService.Domain.Locations;
 
 namespace DirectoryService.Core.Locations;
 

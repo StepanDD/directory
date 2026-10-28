@@ -2,7 +2,10 @@ using System;
 using DirectoryService.Contracts.DepartmentsDtos;
 using DirectoryService.Core.Locations;
 using DirectoryService.Domain;
+using DirectoryService.Domain.Common.Exceptions;
 using DirectoryService.Domain.DepartmentSpace;
+using DirectoryService.Domain.DepartmentSpace.Exceptions;
+using DirectoryService.Domain.Locations.Exceptions;
 using FluentValidation;
 
 namespace DirectoryService.Core.Departments;
@@ -29,10 +32,10 @@ public class DepartmentsService : IDepartmentsService
     public async Task BindLocation(Guid departmentId, Guid locationId, bool isPrimary, CancellationToken cancellationToken)
     {
         Department? department = await _departmentsRepository.GetByIdIncludeLocationsAsync(departmentId, cancellationToken)
-            ?? throw new InvalidOperationException("Отдел не существует");
+            ?? throw new DepartmentNotFoundException(departmentId);
         if (!await _locationsRepository.CheckLocationsExistenceByIdsAsync([locationId], cancellationToken))
         {
-            throw new InvalidOperationException("Локация не существует");
+            throw new LocationNotFoundException(locationId);
         }
         department.AddLocation(locationId, isPrimary);
         await _departmentsRepository.SaveChangesAsync(cancellationToken);
@@ -40,10 +43,10 @@ public class DepartmentsService : IDepartmentsService
     public async Task UnBindLocation(Guid departmentId, Guid locationId, CancellationToken cancellationToken)
     {
         Department? department = await _departmentsRepository.GetByIdIncludeLocationsAsync(departmentId, cancellationToken)
-            ?? throw new InvalidOperationException("Отдел не существует");
+            ?? throw new DepartmentNotFoundException(departmentId);
         if (!await _locationsRepository.CheckLocationsExistenceByIdsAsync([locationId], cancellationToken))
         {
-            throw new InvalidOperationException("Локация не существует");
+            throw new LocationNotFoundException(locationId);
         }
         department.DeleteLocation(locationId);
         await _departmentsRepository.SaveChangesAsync(cancellationToken);
@@ -54,15 +57,15 @@ public class DepartmentsService : IDepartmentsService
         var validationResult = await _createDepartmentValidator.ValidateAsync(departmentDto, cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            throw new DomainValidationException(validationResult.ToErrors());
         }
         if (!await _departmentsRepository.CheckParentIdAsync(departmentDto.ParentId, cancellationToken))
         {
-            throw new InvalidOperationException("Parent department does not exist.");
+            throw new DepartmentNotFoundException(departmentDto.ParentId ?? Guid.Empty);
         }
         if (!await _locationsRepository.CheckLocationsExistenceByIdsAsync(departmentDto.LocationIds, cancellationToken))
         {
-            throw new InvalidOperationException("One or more locations do not exist.");
+            throw new LocationNotFoundException();
         }
         // todo проверка позиций
 
@@ -87,17 +90,17 @@ public class DepartmentsService : IDepartmentsService
         var validationResult = await _updateDepartmentValidator.ValidateAsync(departmentDto, cancellationToken);
         if (!validationResult.IsValid)
         {
-            throw new ValidationException(validationResult.Errors);
+            throw new DomainValidationException(validationResult.ToErrors());
         }
         if (!await _departmentsRepository.CheckParentIdAsync(departmentDto.ParentId, cancellationToken))
         {
-            throw new InvalidOperationException("Parent department does not exist.");
+            throw new DepartmentNotFoundException(departmentDto.ParentId ?? Guid.Empty);
         }
 
         var department = await _departmentsRepository.GetByIdAsync(departmentId, cancellationToken);
         if (department is null)
         {
-            throw new InvalidOperationException($"Department with id {departmentId} does not exist.");
+            throw new DepartmentNotFoundException(departmentId);
         }
         if (!string.IsNullOrWhiteSpace(departmentDto.Name))
         {

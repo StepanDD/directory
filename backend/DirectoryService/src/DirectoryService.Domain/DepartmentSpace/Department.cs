@@ -1,4 +1,5 @@
 using System;
+using DirectoryService.Domain.DepartmentSpace.Exceptions;
 
 namespace DirectoryService.Domain.DepartmentSpace;
 
@@ -86,7 +87,7 @@ public class Department
         var newLocation = new DepartmentLocation(Guid.CreateVersion7(), this, locationId, isPrimary);
         if (_locations.Exists(l => l.LocationId == locationId))
         {
-            throw new InvalidOperationException("Домен: эта локация уже привязана");
+            throw new DepartmentLocationAlreadyExistException(this.Id, locationId);
         }
         _locations.Add(newLocation);
         UpdatedAt = DateTime.UtcNow;
@@ -104,7 +105,7 @@ public class Department
     public void DeleteLocation(Guid locationId)
     {
         var locationForDelete = _locations.FirstOrDefault(l => l.LocationId == locationId)
-            ?? throw new InvalidOperationException("Домен: Такой локации не привязано");
+            ?? throw new DepartmentLocationNotFoundException(this.Id, locationId);
         _locations.Remove(locationForDelete);
         UpdatedAt = DateTime.UtcNow;
     }
