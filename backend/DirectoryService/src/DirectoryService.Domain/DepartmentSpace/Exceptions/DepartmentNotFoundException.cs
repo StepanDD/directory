@@ -8,7 +8,7 @@ public sealed class DepartmentNotFoundException : DomainException
 {
     public DepartmentNotFoundException(Guid departmentId)
         : base(Error.NotFound(
-            "location.not_found",
+            "department.not_found",
             $"Отдел '{departmentId}' не найден."))
     {
     }
